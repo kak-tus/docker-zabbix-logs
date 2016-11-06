@@ -20,4 +20,4 @@ foreach my $dir (@dirs) {
 
 my $val = encode_json( { data => \@data } );
 
-say `zabbix_sender -z $ENV{LOGS_ZABBIX_SERVER} -s $ENV{LOGS_HOSTNAME} -k '$ENV{LOGS_DISCOVERY_KEY}' -o '$val'`;
+`zabbix_sender -z $ENV{LOGS_ZABBIX_SERVER} -s $ENV{LOGS_HOSTNAME} -k '$ENV{LOGS_DISCOVERY_KEY}' -o '$val'`;
