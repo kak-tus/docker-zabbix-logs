@@ -9,6 +9,7 @@ ENV LOGS_HOSTNAME=
 ENV LOGS_ZABBIX_SERVER=
 
 COPY discovery.pl /usr/local/bin/discovery.pl
+COPY log_items.pl /usr/local/bin/log_items.pl
 
 RUN apk add --update-cache perl perl-json zabbix-utils \
   && rm -rf /var/cache/apk/*
