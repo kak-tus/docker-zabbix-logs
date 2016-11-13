@@ -9,10 +9,13 @@ ENV LOGS_HOSTNAME=
 ENV LOGS_ZABBIX_SERVER=
 ENV LOGS_STORE_PATH=/store
 
-COPY discovery.pl /usr/local/bin/discovery.pl
+COPY discovery.pl /etc/periodic/hourly/discovery
 COPY log_items.pl /usr/local/bin/log_items.pl
 
 RUN apk add --update-cache perl perl-json zabbix-utils \
+  && ( ( crontab -l ; echo '*/2 * * * * /usr/bin/flock /tmp/log_items_lock -c /usr/local/bin/log_items.pl' ) | crontab - ) \
   && rm -rf /var/cache/apk/*
 
 VOLUME ["/store"]
+
+CMD crond -f
