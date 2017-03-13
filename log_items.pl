@@ -8,13 +8,13 @@ use utf8;
 use File::Basename qw(basename);
 use File::Temp qw(tempfile);
 
-my $path  = $ENV{LOGS_PATH};
-my $store = $ENV{LOGS_STORE_PATH};
+my $logs_path = $ENV{LOGS_PATH};
+my $store     = $ENV{LOGS_STORE_PATH};
 `mkdir -p $store`;
 
 my $item_key = $ENV{LOGS_ITEM_KEY};
 
-my @dirs = glob '/logs/*';
+my @dirs = glob "$logs_path/*";
 
 my @data;
 
@@ -29,7 +29,7 @@ foreach my $dir (@dirs) {
   }
 
   my ( $curr_file, $curr_size ) = ( undef, 0 );
-  my $summary = 0;
+  my $lines = 0;
 
   my @files = glob "$dir/*";
 
@@ -41,18 +41,23 @@ foreach my $dir (@dirs) {
 
     my $size = -s "$dir/$file";
 
+    open my $fl, "$dir/$file";
+    binmode $fl, ':utf8';
+
     if ( $last_file && $file eq $last_file && $size >= $last_size ) {
-      $summary += $size - $last_size;
+      seek $fl, $last_size, 0;
     }
-    else {
-      $summary += $size;
+
+    while (<$fl>) {
+      $lines++;
     }
+    close $fl;
 
     $curr_file = $file;
     $curr_size = $size;
   }
 
-  push @data, "- ${item_key}[$log] $summary\n";
+  push @data, "- ${item_key}[$log] $lines\n";
 
   if ($curr_file) {
     open my $fl, ">$store/$log";
