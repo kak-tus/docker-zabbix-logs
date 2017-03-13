@@ -18,4 +18,4 @@ RUN apk add --update-cache perl perl-json zabbix-utils \
 
 VOLUME ["/store"]
 
-CMD crond -f
+CMD [ "crond", "-f" ]
