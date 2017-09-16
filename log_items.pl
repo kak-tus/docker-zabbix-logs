@@ -42,7 +42,7 @@ foreach my $dir (@dirs) {
     my $size = -s "$dir/$file";
 
     open my $fl, "$dir/$file";
-    binmode $fl, ':utf8';
+    binmode $fl, ':bytes';
 
     if ( $last_file && $file eq $last_file && $size >= $last_size ) {
       seek $fl, $last_size, 0;
